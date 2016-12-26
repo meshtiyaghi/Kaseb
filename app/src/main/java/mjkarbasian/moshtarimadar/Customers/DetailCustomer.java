@@ -17,10 +17,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import mjkarbasian.moshtarimadar.Data.KasebContract;
-import mjkarbasian.moshtarimadar.R;
 import mjkarbasian.moshtarimadar.Adapters.DetailCustomerAdapter;
+import mjkarbasian.moshtarimadar.Data.KasebContract;
 import mjkarbasian.moshtarimadar.Helpers.Utility;
+import mjkarbasian.moshtarimadar.R;
 
 public class DetailCustomer extends AppCompatActivity {
     Toolbar mToolbar;
@@ -99,12 +99,6 @@ public class DetailCustomer extends AppCompatActivity {
             }
         });
         customerCursor.close();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        this.finish();
     }
 
     @Override

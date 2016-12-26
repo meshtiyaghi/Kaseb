@@ -605,11 +605,7 @@ public class Utility {
         int pDay = pCalendar.getDayOfMonth();
         String pDate = Integer.toString(pYear) + "/" + Integer.toString(pMonth) + "/" + Integer.toString(pDay);
         if (!getLocale(context).equals("IR")) {
-<<<<<<< HEAD:app/src/main/java/mjkarbasian/moshtarimadar/helper/Utility.java
-           return formatDate(calendar);
-=======
             return formatDate(calendar);
->>>>>>> 530da44a7667c1614505eb1f2753f7283de3cda2:app/src/main/java/mjkarbasian/moshtarimadar/Helpers/Utility.java
         } else {
             return pDate;
         }

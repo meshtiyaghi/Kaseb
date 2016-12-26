@@ -602,11 +602,7 @@ public class KasebProvider extends ContentProvider {
                         projection,
                         KasebContract.DetailSale.COLUMN_IS_BALANCED + " = ?",
                         new String[]{isBalancedId},
-<<<<<<< HEAD
-                        null,
-=======
                         KasebContract.Sales.COLUMN_CUSTOMER_ID,
->>>>>>> 530da44a7667c1614505eb1f2753f7283de3cda2
                         null,
                         sortOrder
                 );
