@@ -1,4 +1,4 @@
-package mjkarbasian.moshtarimadar.adapters;
+package mjkarbasian.moshtarimadar.Adapters;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -10,20 +10,21 @@ import android.widget.TextView;
 
 import mjkarbasian.moshtarimadar.Data.KasebContract;
 import mjkarbasian.moshtarimadar.R;
+import mjkarbasian.moshtarimadar.Helpers.Utility;
 
 /**
  * Created by Unique on 11/11/2016.
  */
 public class CostSaleProductAdapter extends CursorAdapter {
-    private LayoutInflater cursorInflater;
     String witchActivity;
     String firstName;
     String lastName;
     String name;
     String code;
     String date;
-    String amount;
+    Long amount;
     Cursor mCursor;
+    private LayoutInflater cursorInflater;
 
     public CostSaleProductAdapter(Context context, Cursor c, int flags, String tableName) {
         super(context, c, flags);
@@ -49,11 +50,10 @@ public class CostSaleProductAdapter extends CursorAdapter {
                 name = cursor.getString(cursor.getColumnIndex(KasebContract.Costs.COLUMN_COST_NAME));
                 code = cursor.getString(cursor.getColumnIndex(KasebContract.Costs.COLUMN_COST_CODE));
                 date = cursor.getString(cursor.getColumnIndex(KasebContract.Costs.COLUMN_DATE));
-                amount = cursor.getString(cursor.getColumnIndex(KasebContract.Costs.COLUMN_AMOUNT));
+                amount = cursor.getLong(cursor.getColumnIndex(KasebContract.Costs.COLUMN_AMOUNT));
                 break;
             }
             case "sale": {
-
                 //region read customer FirstName & LastName
                 String customerId = cursor.getString(cursor.getColumnIndex(KasebContract.Sales.COLUMN_CUSTOMER_ID));
 
@@ -78,7 +78,7 @@ public class CostSaleProductAdapter extends CursorAdapter {
 
                 mCursor = context.getContentResolver().query(
                         KasebContract.DetailSale.buildDetailSaleUri(Long.parseLong(saleId)),
-                        new String[]{KasebContract.DetailSale.COLUMN_DATE, KasebContract.DetailSale.COLUMN_TOTAL_PAID},
+                        new String[]{KasebContract.DetailSale.COLUMN_DATE, KasebContract.DetailSale.COLUMN_TOTAL_DUE},
                         null,
                         null,
                         null);
@@ -86,7 +86,7 @@ public class CostSaleProductAdapter extends CursorAdapter {
                 if (mCursor != null) {
                     if (mCursor.moveToFirst()) {
                         date = mCursor.getString(mCursor.getColumnIndex(KasebContract.DetailSale.COLUMN_DATE));
-                        amount = mCursor.getString(mCursor.getColumnIndex(KasebContract.DetailSale.COLUMN_TOTAL_PAID));
+                        amount = mCursor.getLong(mCursor.getColumnIndex(KasebContract.DetailSale.COLUMN_TOTAL_DUE));
                     }
                 }
                 //endregion
@@ -96,20 +96,22 @@ public class CostSaleProductAdapter extends CursorAdapter {
             }
             case "product": {
 
-                //region read DetailSale Date & TotalPaid
+                //region read ProductHistory Date & SalePrice
                 String productId = cursor.getString(cursor.getColumnIndex(KasebContract.Products._ID));
 
                 mCursor = context.getContentResolver().query(
-                        KasebContract.ProductHistory.buildProductHistoryUri(Long.parseLong(productId)),
-                        new String[]{KasebContract.ProductHistory.COLUMN_DATE, KasebContract.ProductHistory.COLUMN_COST},
+                        KasebContract.ProductHistory.aProductHistory(Long.parseLong(productId)),
+                        new String[]{
+                                KasebContract.ProductHistory.COLUMN_DATE,
+                                KasebContract.ProductHistory.COLUMN_SALE_PRICE},
                         null,
                         null,
                         null);
 
                 if (mCursor != null) {
-                    if (mCursor.moveToFirst()) {
+                    if (mCursor.moveToLast()) {
                         date = mCursor.getString(mCursor.getColumnIndex(KasebContract.ProductHistory.COLUMN_DATE));
-                        amount = mCursor.getString(mCursor.getColumnIndex(KasebContract.ProductHistory.COLUMN_COST));
+                        amount = mCursor.getLong(mCursor.getColumnIndex(KasebContract.ProductHistory.COLUMN_SALE_PRICE));
                     }
                 }
                 //endregion
@@ -123,7 +125,8 @@ public class CostSaleProductAdapter extends CursorAdapter {
         textViewName.setText(name);
         textViewCode.setText(code);
         textViewDate.setText(date);
-        textViewAmount.setText(amount);
-//        mCursor.close();
+        textViewAmount.setText(Utility.formatPurchase(
+                context,
+                Utility.DecimalSeperation(context, Long.valueOf(String.format("%.0f", (float) amount)))));
     }
 }
